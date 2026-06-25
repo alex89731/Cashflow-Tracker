@@ -1,29 +1,21 @@
-# Python
-__pycache__/
-*.pyc
-*.pyo
-*.pyd
-
-# Virtual Environment
+# Файлы виртуального окружения
 .venv/
 venv/
 env/
 
-# Django
-*.log
+# База данных SQLite
+*.sqlite3
 db.sqlite3
-db.sqlite3-journal
 
-# Collected static files
-staticfiles/
-
-# IDE settings
+# Конфигурация IDE (PyCharm)
 .idea/
 
-# Secrets (example)
-*.env
-local_settings.py
+# Кэш и скомпилированные файлы Python
+__pycache__/
+*.pyc
 
-# OS-specific
-.DS_Store
-Thumbs.db
+# Папка, куда Django собирает все статические файлы
+staticfiles/
+
+# Локальные настройки (если вы решите их создать)
+local_settings.py
