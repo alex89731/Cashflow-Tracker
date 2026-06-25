@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Подтвердить удаление</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container mt-4">
+        <h1>Подтвердить удаление</h1>
+        <p>Вы уверены, что хотите удалить запись от {{ cashflow.created_date|date:"d.m.Y" }} на сумму {{ cashflow.amount }}?</p>
+        <form method="post">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger">Удалить</button>
+            <a href="{% url 'cashflow_list' %}" class="btn btn-secondary">Отмена</a>
+        </form>
+    </div>
+</body>
+</html>

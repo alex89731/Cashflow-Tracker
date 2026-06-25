@@ -1,0 +1,48 @@
+body {
+    background-color: #f8f9fa;
+    transition: margin-left .3s;
+}
+
+.sidebar {
+    height: 100%;
+    width: 280px;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    background-color: #fff;
+    overflow-x: hidden;
+    transition: 0.3s;
+    padding: 20px;
+    border-right: 1px solid #dee2e6;
+    box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+}
+
+.sidebar-hidden {
+    left: -280px;
+}
+
+#main-content {
+    transition: margin-left .3s;
+    padding: 20px;
+}
+
+#main-content.sidebar-active {
+    margin-left: 280px;
+}
+
+.sidebar .form-group {
+    margin-bottom: 1rem;
+}
+
+.sidebar label {
+    font-weight: 600;
+    color: #555;
+}
+
+.btn-toggle-filter {
+    position: fixed;
+    top: 15px;
+    left: 15px;
+    z-index: 2;
+}

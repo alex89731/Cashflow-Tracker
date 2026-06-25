@@ -1,0 +1,23 @@
+{% for cf in filter.qs %}
+<tr>
+    <td>{{ cf.created_date|date:"d.m.Y" }}</td>
+    <td>{{ cf.status.name }}</td>
+    <td>{{ cf.type.name }}</td>
+    <td>{{ cf.category.name }}</td>
+    <td>{{ cf.subcategory.name }}</td>
+    <td>{{ cf.amount }} ₽</td>
+    <td>{{ cf.comment }}</td>
+    <td>
+        <a href="{% url 'cashflow_update' cf.pk %}" class="btn btn-sm btn-outline-primary" data-toggle="tooltip" title="Редактировать запись">
+            <i class="fas fa-pencil-alt"></i>
+        </a>
+        <a href="{% url 'cashflow_delete' cf.pk %}" class="btn btn-sm btn-outline-danger" data-toggle="tooltip" title="Удалить запись">
+            <i class="fas fa-trash-alt"></i>
+        </a>
+    </td>
+</tr>
+{% empty %}
+<tr>
+    <td colspan="8" class="text-center">Записей не найдено.</td>
+</tr>
+{% endfor %}

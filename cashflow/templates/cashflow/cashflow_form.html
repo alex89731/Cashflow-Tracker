@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>{% if cashflow %}Редактировать запись{% else %}Создать запись{% endif %}</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container mt-4">
+        <h1>{% if cashflow %}Редактировать запись{% else %}Создать запись{% endif %}</h1>
+        <form method="post" id="cashflow-form">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-primary">Сохранить</button>
+            <a href="{% url 'cashflow_list' %}" class="btn btn-secondary">Отмена</a>
+        </form>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const typeSelect = document.getElementById('id_type');
+            const categorySelect = document.getElementById('id_category');
+            const subcategorySelect = document.getElementById('id_subcategory');
+
+            function updateSelect(selectElement, options) {
+                selectElement.innerHTML = '<option value="">---------</option>'; // Очищаем и добавляем пустой вариант
+                options.forEach(option => {
+                    const optionElement = new Option(option.name, option.id);
+                    selectElement.add(optionElement);
+                });
+            }
+
+            typeSelect.addEventListener('change', function() {
+                const typeId = this.value;
+
+                // Очищаем оба зависимых списка
+                updateSelect(categorySelect, []);
+                updateSelect(subcategorySelect, []);
+
+                if (typeId) {
+                    fetch(`/api/categories/?type_id=${typeId}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            updateSelect(categorySelect, data);
+                        });
+                }
+            });
+
+            categorySelect.addEventListener('change', function() {
+                const categoryId = this.value;
+
+                // Очищаем только список подкатегорий
+                updateSelect(subcategorySelect, []);
+
+                if (categoryId) {
+                    fetch(`/api/subcategories/?category_id=${categoryId}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            updateSelect(subcategorySelect, data);
+                        });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
