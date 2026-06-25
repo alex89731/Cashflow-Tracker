@@ -1,19 +1,29 @@
-# Кэш Python и скомпилированные файлы
+# Python
 __pycache__/
-*.py[cod]
-*$py.class
+*.pyc
+*.pyo
+*.pyd
 
-# Виртуальные окружения (замените на название вашей папки, если оно другое)
+# Virtual Environment
+.venv/
 venv/
 env/
-.env/
 
-# Локальные настройки редакторов кода
+# Django
+*.log
+db.sqlite3
+db.sqlite3-journal
+
+# Collected static files
+staticfiles/
+
+# IDE settings
 .idea/
-.vscode/
 
-# Специфичные файлы ОС (например, для macOS)
+# Secrets (example)
+*.env
+local_settings.py
+
+# OS-specific
 .DS_Store
-
-# Файлы с секретами и паролями
-.env
+Thumbs.db
