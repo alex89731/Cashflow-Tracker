@@ -17,13 +17,13 @@ class CashFlowFilter(django_filters.FilterSet):
         widget=forms.Select(attrs={'class': 'form-control'}), empty_label="Все типы"
     )
     
-    # Изначально queryset пустой. Заполняется в __init__ или через JS.
+    # Изначально набор вариантов пуст. Он будет заполнен в __init__ или через JavaScript.
     category = django_filters.ModelChoiceFilter(
         queryset=Category.objects.none(), label='Категория',
         widget=forms.Select(attrs={'class': 'form-control'}), empty_label="Все категории"
     )
     
-    # Изначально queryset пустой.
+    # Изначально набор вариантов пуст.
     subcategory = django_filters.ModelChoiceFilter(
         queryset=Subcategory.objects.none(), label='Подкатегория',
         widget=forms.Select(attrs={'class': 'form-control'}), empty_label="Все подкатегории"
@@ -37,7 +37,8 @@ class CashFlowFilter(django_filters.FilterSet):
         super().__init__(*args, **kwargs)
         
         # Эта логика выполняется на сервере ПЕРЕД отправкой страницы в браузер.
-        # Она гарантирует, что если фильтр уже применен, в списках будут правильные опции.
+        # Она гарантирует, что если фильтр уже был применен (например, после перезагрузки страницы),
+        # в выпадающих списках будут правильные, уже отфильтрованные опции.
         
         selected_type = self.data.get('type')
         if selected_type:

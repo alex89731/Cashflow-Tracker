@@ -1,4 +1,5 @@
 from django import forms
+from django.utils import timezone
 from .models import CashFlow, Type, Category, Subcategory
 
 class CashFlowForm(forms.ModelForm):
@@ -9,7 +10,11 @@ class CashFlowForm(forms.ModelForm):
         model = CashFlow
         fields = ['created_date', 'status', 'type', 'category', 'subcategory', 'amount', 'comment']
         widgets = {
-            'created_date': forms.DateInput(attrs={'type': 'date', 'required': True}),
+            # Используем виджет для даты и времени и указываем нужный формат
+            'created_date': forms.DateTimeInput(
+                attrs={'type': 'datetime-local', 'required': True},
+                format='%Y-%m-%dT%H:%M'
+            ),
             'status': forms.Select(attrs={'required': True}),
             'type': forms.Select(attrs={'required': True}),
             'category': forms.Select(attrs={'required': True}),
@@ -19,15 +24,21 @@ class CashFlowForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         """
-        Конструктор формы для реализации каскадных полей.
+        Конструктор формы для реализации каскадных полей и установки начальных значений.
         """
         super().__init__(*args, **kwargs)
         
-        # Изначально списки категорий и подкатегорий пусты
+        # --- Установка начального значения для даты и времени ---
+        # Проверяем, что это новая запись (а не редактирование существующей)
+        if not self.instance.pk:
+            # Устанавливаем начальное значение поля равным текущему времени
+            self.fields['created_date'].initial = timezone.now()
+
+        # --- Логика для каскадных полей ---
         self.fields['category'].queryset = Category.objects.none()
         self.fields['subcategory'].queryset = Subcategory.objects.none()
 
-        # Если форма отправлена (в self.data есть данные)
+        # Если форма была отправлена с данными
         if self.data:
             try:
                 type_id = int(self.data.get('type'))
@@ -36,15 +47,15 @@ class CashFlowForm(forms.ModelForm):
                 category_id = int(self.data.get('category'))
                 self.fields['subcategory'].queryset = Subcategory.objects.filter(category_id=category_id).order_by('name')
             except (ValueError, TypeError):
-                pass
-        # Если форма открыта для редактирования существующей записи
+                pass # Игнорируем ошибки, если пришли некорректные данные
+        # Если форма открывается для редактирования существующего объекта
         elif self.instance.pk:
             self.fields['category'].queryset = Category.objects.filter(type=self.instance.type).order_by('name')
             self.fields['subcategory'].queryset = self.instance.category.subcategories.order_by('name')
 
     def clean(self):
         """
-        Валидация зависимостей между полями.
+        Валидация зависимостей между полями на уровне всей формы.
         """
         cleaned_data = super().clean()
         
@@ -52,9 +63,11 @@ class CashFlowForm(forms.ModelForm):
         category = cleaned_data.get("category")
         subcategory = cleaned_data.get("subcategory")
         
+        # Проверяем, что выбранная категория относится к выбранному типу
         if type_ and category and category.type != type_:
             raise forms.ValidationError("Выбранная категория не относится к указанному типу.")
         
+        # Проверяем, что выбранная подкатегория относится к выбранной категории
         if category and subcategory and subcategory.category != category:
             raise forms.ValidationError("Выбранная подкатегория не относится к указанной категории.")
         
