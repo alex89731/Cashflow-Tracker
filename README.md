@@ -7,8 +7,8 @@
 ### 1. Клонирование репозитория
 
 ```bash
-git clone <URL вашего репозитория>
-cd <название папки проекта>
+git clone https://github.com/alex89731/Cashflow-Tracker
+cd Cashflow-Tracker
 ```
 
 ### 2. Создание и активация виртуального окружения
